@@ -80,17 +80,10 @@
 <body>
   <div id="splashScreen">
     <img src="favicon.ico" alt="Logo Monaicca" width="100" style="margin-bottom: 1rem;" />
-    <img src="favicon.ico" alt="Logo Monaicca" width="100" style="margin-bottom: 1rem;" />
-    <img src="favicon.ico" alt="Logo Monaicca" width="80" style="margin-bottom: 1rem;" />
-    <img src="favicon.ico" alt="Logo Monaicca" width="80" style="margin-bottom: 1rem;" />
     <h1>Monaicca</h1>
     <p>Calcolatore di Mana in versione Limited</p>
   </div>
   <div id="appWrapper" style="display:none">
-    <h1>Monaicca</h1>
-    <p>Calcolatore di Mana in versione Limited</p>
-  </div>
-</div></div>
 
   <h1>Monaicca – Limited Deckbuilder</h1>
 
@@ -109,7 +102,7 @@
   </form>
 
   <div class="result" id="landResult"></div>
-  <canvas id="manaChart" width="250" height="100"></canvas>
+  <canvas id="manaChart" style="max-width: 500px; height: 150px;"></canvas>
   <div class="curve" id="curveAdvice"></div>
 
   <div id="export">
@@ -169,7 +162,9 @@
         type: 'bar',
         data: {
           labels: colorLabels,
-          datasets: [{ barThickness: 20, 
+          datasets: [{
+            barPercentage: 0.8,
+            barPercentage: 0.6,  
             label: 'Numero Terre per Colore',
             data: landData,
             backgroundColor: [
