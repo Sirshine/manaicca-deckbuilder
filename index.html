@@ -78,10 +78,11 @@
   </style>
 </head>
 <body>
-  <div id="splashScreen">
+  <div id="appWrapper" style="display:none">
     <h1>Monaicca</h1>
     <p>Calcolatore di Mana in versione Limited</p>
   </div>
+</div></div>
 
   <h1>Monaicca – Limited Deckbuilder</h1>
 
@@ -205,6 +206,10 @@
         if (splash) splash.remove();
       }, 4000);
     });
-  </script>
+  
+    // Mostra il contenuto principale dopo lo splash
+    const wrapper = document.getElementById('appWrapper');
+    if (wrapper) wrapper.style.display = 'block';
+</script>
 </body>
 </html>
