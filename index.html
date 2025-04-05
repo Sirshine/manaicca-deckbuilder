@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,10 +32,6 @@
         opacity: 0;
         visibility: hidden;
       }
-    }
-    #splashScreen img {
-      width: 100px;
-      margin-bottom: 1rem;
     }
     #splashScreen h1 {
       font-size: 2.5rem;
@@ -84,11 +79,132 @@
 </head>
 <body>
   <div id="splashScreen">
-    <img src="favicon.ico" alt="Logo Monaicca" />
     <h1>Monaicca</h1>
     <p>Calcolatore di Mana in versione Limited</p>
   </div>
 
-  <!-- Il resto del contenuto è già incluso nello script precedente -->
+  <h1>Monaicca – Limited Deckbuilder</h1>
+
+  <form id="deckForm">
+    <div id="colorInputs">
+      <label>Bianco: <input type="number" id="white" value="0"></label>
+      <label>Blu: <input type="number" id="blue" value="0"></label>
+      <label>Nero: <input type="number" id="black" value="0"></label>
+      <label>Rosso: <input type="number" id="red" value="0"></label>
+      <label>Verde: <input type="number" id="green" value="0"></label>
+      <label>Splash: <input type="number" id="splash" value="0"></label>
+      <label>Fixer disponibili: <input type="number" id="fixer" value="0"></label>
+      <label>Numero Terre Totali: <input type="number" id="totalLands" value="17"></label>
+    </div>
+    <button type="submit">Calcola Mana</button>
+  </form>
+
+  <div class="result" id="landResult"></div>
+  <canvas id="manaChart" width="400" height="200"></canvas>
+  <div class="curve" id="curveAdvice"></div>
+
+  <div id="export">
+    <button onclick="exportDeck()">Esporta Risultato</button>
+  </div>
+
+  <script>
+    let chart;
+
+    function exportDeck() {
+      const result = document.getElementById("landResult").innerText;
+      const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "manaicca_output.txt";
+      link.click();
+    }
+
+    document.getElementById("deckForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const colors = ["white", "blue", "black", "red", "green"];
+      const colorLabels = ["Bianco", "Blu", "Nero", "Rosso", "Verde"];
+      let cardCounts = {};
+      let totalColored = 0;
+      colors.forEach(color => {
+        const val = parseInt(document.getElementById(color).value) || 0;
+        cardCounts[color] = val;
+        totalColored += val;
+      });
+
+      const splash = parseInt(document.getElementById("splash").value) || 0;
+      const fixer = parseInt(document.getElementById("fixer").value) || 0;
+      const totalLands = parseInt(document.getElementById("totalLands").value) || 17;
+
+      let landResult = "Distribuzione Terre Consigliata\n";
+      let baseLands = totalLands - fixer - (splash > 0 ? 2 : 0);
+
+      let landData = [];
+
+      colors.forEach(color => {
+        const portion = totalColored > 0 ? cardCounts[color] / totalColored : 0;
+        const lands = Math.round(portion * baseLands);
+        landData.push(lands);
+        if (lands > 0) landResult += `${color.charAt(0).toUpperCase() + color.slice(1)}: ${lands}\n`;
+      });
+
+      if (splash > 0) landResult += `Splash: 2 terre per supportare ${splash} carte\n`;
+      if (fixer > 0) landResult += `Fixer: ${fixer} fonte/fixing generico\n`;
+      landResult += `Totale terre: ${totalLands}`;
+
+      document.getElementById("landResult").innerHTML = landResult.replace(/\n/g, "<br>");
+
+      const ctx = document.getElementById('manaChart').getContext('2d');
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: colorLabels,
+          datasets: [{
+            label: 'Numero Terre per Colore',
+            data: landData,
+            backgroundColor: [
+              '#fffdd0', '#00f', '#111', '#f00', '#0f0'
+            ],
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#fff'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#fff'
+              }
+            }
+          }
+        }
+      });
+
+      document.getElementById("curveAdvice").innerHTML = `
+        <h2>Curva di Mana – Consigli</h2>
+        <ul>
+          <li>Avere almeno 5-7 carte a costo 2.</li>
+          <li>Limitare i drop a 5+ a massimo 4-5 carte.</li>
+          <li>Gioca 16 terre se la curva è bassa e il mazzo è aggressivo.</li>
+          <li>Evita troppi costi doppi dello stesso colore se non hai fixer.</li>
+        </ul>`;
+    });
+  
+    // Rimozione dello splash screen dopo l'animazione
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash) splash.remove();
+      }, 4000);
+    });
+  </script>
 </body>
 </html>
