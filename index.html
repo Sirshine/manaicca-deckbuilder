@@ -79,7 +79,7 @@
 </head>
 <body>
   <div id="splashScreen">
-    <img src="favicon.ico" alt="Logo Monaicca" width="100" style="margin-bottom: 1rem;" />
+    <img src="favicon.ico" alt="Logo Monaicca" width="80" style="margin-bottom: 1rem;" />
     <h1>Monaicca</h1>
     <p>Calcolatore di Mana in versione Limited</p>
   </div>
@@ -102,7 +102,7 @@
   </form>
 
   <div class="result" id="landResult"></div>
-  <canvas id="manaChart" style="max-width: 500px; height: 150px;"></canvas>
+  <canvas id="manaChart" style="max-width: 400px; height: 80px;"></canvas>
   <div class="curve" id="curveAdvice"></div>
 
   <div id="export">
@@ -163,8 +163,7 @@
         data: {
           labels: colorLabels,
           datasets: [{
-            barPercentage: 0.8,
-            barPercentage: 0.6,  
+            barPercentage: 0.7,  
             label: 'Numero Terre per Colore',
             data: landData,
             backgroundColor: [
