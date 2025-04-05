@@ -78,6 +78,11 @@
   </style>
 </head>
 <body>
+  <div id="splashScreen">
+    <img src="favicon.ico" alt="Logo Monaicca" width="80" style="margin-bottom: 1rem;" />
+    <h1>Monaicca</h1>
+    <p>Calcolatore di Mana in versione Limited</p>
+  </div>
   <div id="appWrapper" style="display:none">
     <h1>Monaicca</h1>
     <p>Calcolatore di Mana in versione Limited</p>
@@ -161,7 +166,7 @@
         type: 'bar',
         data: {
           labels: colorLabels,
-          datasets: [{
+          datasets: [{ barThickness: 30,
             label: 'Numero Terre per Colore',
             data: landData,
             backgroundColor: [
