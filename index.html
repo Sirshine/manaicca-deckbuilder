@@ -137,11 +137,7 @@
       const colorLabels = ["Bianco", "Blu", "Nero", "Rosso", "Verde"];
       let cardCounts = {};
       let totalColored = 0;
-      colors.forEach(color => {
-        const val = parseInt(document.getElementById(color).value) || 0;
-        cardCounts[color] = val;
-        totalColored += val;
-      });
+      
 
       if (totalColored === 0) {
         document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
@@ -153,14 +149,44 @@
       let landResult = "Distribuzione Terre Consigliata
 ";
       let baseLands = totalLands;
+      let landsAssigned = 0;
+      colors.forEach(color => {
+        const val = parseInt(document.getElementById(color).value) || 0;
+        cardCounts[color] = val;
+        totalColored += val;
+      });
+      if (totalColored === 0) {
+        document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
+        return;
+      }
+
+      let rawLands = colors.map(color => cardCounts[color] / totalColored * baseLands);
+      let roundedLands = rawLands.map(x => Math.floor(x));
+      landsAssigned = roundedLands.reduce((a, b) => a + b, 0);
+      let remainder = baseLands - landsAssigned;
+
+      // Distribuzione equa degli scarti
+      while (remainder > 0) {
+        let maxDiff = -1;
+        let maxIndex = -1;
+        for (let i = 0; i < colors.length; i++) {
+          let diff = rawLands[i] - roundedLands[i];
+          if (diff > maxDiff) {
+            maxDiff = diff;
+            maxIndex = i;
+          }
+        }
+        roundedLands[maxIndex]++;
+        remainder--;
+      }
 
       let landData = [];
 
-      colors.forEach(color => {
-        const portion = totalColored > 0 ? cardCounts[color] / totalColored : 0;
-        const lands = Math.round(portion * baseLands);
+      colors.forEach((color, i) => {
+        const lands = roundedLands[i];
         landData.push(lands);
-        if (lands > 0) landResult += `${color.charAt(0).toUpperCase() + color.slice(1)}: ${lands}
+        const labelIT = colorLabels[i];
+        if (lands > 0) landResult += `${labelIT}: ${lands}
 `;
       });
 
