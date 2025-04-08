@@ -137,7 +137,12 @@
       const colorLabels = ["Bianco", "Blu", "Nero", "Rosso", "Verde"];
       let cardCounts = {};
       let totalColored = 0;
-      
+
+      colors.forEach(color => {
+        const val = parseInt(document.getElementById(color).value) || 0;
+        cardCounts[color] = val;
+        totalColored += val;
+      });
 
       if (totalColored === 0) {
         document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
@@ -150,22 +155,12 @@
 ";
       let baseLands = totalLands;
       let landsAssigned = 0;
-      colors.forEach(color => {
-        const val = parseInt(document.getElementById(color).value) || 0;
-        cardCounts[color] = val;
-        totalColored += val;
-      });
-      if (totalColored === 0) {
-        document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
-        return;
-      }
 
       let rawLands = colors.map(color => cardCounts[color] / totalColored * baseLands);
       let roundedLands = rawLands.map(x => Math.floor(x));
       landsAssigned = roundedLands.reduce((a, b) => a + b, 0);
       let remainder = baseLands - landsAssigned;
 
-      // Distribuzione equa degli scarti
       while (remainder > 0) {
         let maxDiff = -1;
         let maxIndex = -1;
