@@ -108,16 +108,27 @@
   </div>
 
   <script>
-    let chart;
+  let chart;
 
-    function exportDeck() {
-      const result = document.getElementById("landResult").innerText;
-      const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "manaicca_output.txt";
-      link.click();
-    }
+  function exportDeck() {
+    const result = document.getElementById("landResult").innerText;
+    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "manaicca_output.txt";
+    link.click();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Mostra il contenuto principale dopo lo splash
+    const wrapper = document.getElementById('appWrapper');
+    if (wrapper) wrapper.style.display = 'block';
+
+    // Rimozione dello splash screen
+    setTimeout(() => {
+      const splash = document.getElementById('splashScreen');
+      if (splash) splash.remove();
+    }, 4000);
 
     document.getElementById("deckForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -131,15 +142,16 @@
         cardCounts[color] = val;
         totalColored += val;
       });
+
       if (totalColored === 0) {
         document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
         return;
       }
 
-      
       const totalLands = parseInt(document.getElementById("totalLands").value) || 17;
 
-      let landResult = "Distribuzione Terre Consigliata\n";
+      let landResult = "Distribuzione Terre Consigliata
+";
       let baseLands = totalLands;
 
       let landData = [];
@@ -148,13 +160,14 @@
         const portion = totalColored > 0 ? cardCounts[color] / totalColored : 0;
         const lands = Math.round(portion * baseLands);
         landData.push(lands);
-        if (lands > 0) landResult += `${color.charAt(0).toUpperCase() + color.slice(1)}: ${lands}\n`;
+        if (lands > 0) landResult += `${color.charAt(0).toUpperCase() + color.slice(1)}: ${lands}
+`;
       });
 
-      
       landResult += `Totale terre: ${totalLands}`;
 
-      document.getElementById("landResult").innerHTML = landResult.replace(/\n/g, "<br>");
+      document.getElementById("landResult").innerHTML = landResult.replace(/
+/g, "<br>");
 
       const ctx = document.getElementById('manaChart').getContext('2d');
       if (chart) chart.destroy();
@@ -163,7 +176,7 @@
         data: {
           labels: colorLabels,
           datasets: [{
-            barPercentage: 0.7,  
+            barPercentage: 0.7,
             label: 'Numero Terre per Colore',
             data: landData,
             backgroundColor: [
@@ -197,21 +210,9 @@
           <li>Avere almeno 5-7 carte a costo 2.</li>
           <li>Limitare i drop a 5+ a massimo 4-5 carte.</li>
           <li>Gioca 16 terre se la curva è bassa e il mazzo è aggressivo.</li>
-          <li>Evita troppi costi doppi dello stesso colore se non hai fixer.</li>
         </ul>`;
     });
-  
-    // Rimozione dello splash screen dopo l'animazione
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        const splash = document.getElementById('splashScreen');
-        if (splash) splash.remove();
-      }, 4000);
-    });
-  
-    // Mostra il contenuto principale dopo lo splash
-    const wrapper = document.getElementById('appWrapper');
-    if (wrapper) wrapper.style.display = 'block';
+  });
 </script>
 </body>
 </html>
