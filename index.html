@@ -94,8 +94,6 @@
       <label>Nero: <input type="number" id="black" value="0"></label>
       <label>Rosso: <input type="number" id="red" value="0"></label>
       <label>Verde: <input type="number" id="green" value="0"></label>
-      <label>Splash: <input type="number" id="splash" value="0"></label>
-      <label>Fixer disponibili: <input type="number" id="fixer" value="0"></label>
       <label>Numero Terre Totali: <input type="number" id="totalLands" value="17"></label>
     </div>
     <button type="submit">Calcola Mana</button>
@@ -127,19 +125,23 @@
       const colors = ["white", "blue", "black", "red", "green"];
       const colorLabels = ["Bianco", "Blu", "Nero", "Rosso", "Verde"];
       let cardCounts = {};
-      let totalColored = 0;
-      colors.forEach(color => {
+      let totalColored = 0;$1
+      if (colors.every(color => (parseInt(document.getElementById(color).value) || 0) === 0)) {
+        document.getElementById("landResult").innerHTML = "<p>Inserisci almeno una carta per colore.</p>";
+        return;
+      }
+
+(color => {
         const val = parseInt(document.getElementById(color).value) || 0;
         cardCounts[color] = val;
         totalColored += val;
       });
 
-      const splash = parseInt(document.getElementById("splash").value) || 0;
-      const fixer = parseInt(document.getElementById("fixer").value) || 0;
+      
       const totalLands = parseInt(document.getElementById("totalLands").value) || 17;
 
       let landResult = "Distribuzione Terre Consigliata\n";
-      let baseLands = totalLands - fixer - (splash > 0 ? 2 : 0);
+      let baseLands = totalLands;
 
       let landData = [];
 
@@ -150,8 +152,7 @@
         if (lands > 0) landResult += `${color.charAt(0).toUpperCase() + color.slice(1)}: ${lands}\n`;
       });
 
-      if (splash > 0) landResult += `Splash: 2 terre per supportare ${splash} carte\n`;
-      if (fixer > 0) landResult += `Fixer: ${fixer} fonte/fixing generico\n`;
+      
       landResult += `Totale terre: ${totalLands}`;
 
       document.getElementById("landResult").innerHTML = landResult.replace(/\n/g, "<br>");
